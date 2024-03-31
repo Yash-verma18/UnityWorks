@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
   CardContent,
@@ -18,7 +19,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -82,6 +87,10 @@ export default function SignupPage() {
   };
 
   const accountType = form.watch("accountType");
+
+  const dobfromDate = new Date();
+  dobfromDate.setFullYear(dobfromDate.getFullYear() - 120);
+
   return (
     <>
       <PersonStandingIcon size={50} />
@@ -192,6 +201,26 @@ export default function SignupPage() {
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
+                        <PopoverContent align="start" className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            defaultMonth={field.value}
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            fixedWeeks
+                            weekStartsOn={1}
+                            fromDate={dobfromDate}
+                            toDate={new Date()}
+                            // disable a specific date
+                            // disabled={[new Date("2024-03-03")]}
+
+                            // disable sundays and saturdays
+                            // disabled={(date) => {
+                            //   return date.getDay() === 0 || date.getDay() === 6;
+                            // }}
+                            // captionLayout="buttons"
+                          />
+                        </PopoverContent>
                       </Popover>
                     </FormControl>
                     <FormMessage />
