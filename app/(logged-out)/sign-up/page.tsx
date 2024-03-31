@@ -31,12 +31,32 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-const formSchema = z.object({
-  email: z.string().email(),
-  accountType: z.enum(["personal", "company"]),
-  companyName: z.string().optional(),
-  numberOfEmployees: z.coerce.number().optional(),
-});
+const formSchema = z
+  .object({
+    email: z.string().email(),
+    accountType: z.enum(["personal", "company"]),
+    companyName: z.string().optional(),
+    numberOfEmployees: z.coerce.number().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.accountType === "company" && !data.companyName) {
+      return ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["companyName"],
+        message: "Company Name is required",
+      });
+    }
+    if (
+      data.accountType === "company" &&
+      (!data.numberOfEmployees || data.numberOfEmployees < 1)
+    ) {
+      return ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["numberOfEmployees"],
+        message: "numberOfEmployees is required",
+      });
+    }
+  });
 
 export default function SignupPage() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,6 +69,8 @@ export default function SignupPage() {
   const handleSubmit = () => {
     console.log("Login Validation passed!");
   };
+
+  const accountType = form.watch("accountType");
   return (
     <>
       <PersonStandingIcon size={50} />
@@ -104,6 +126,41 @@ export default function SignupPage() {
                   </FormItem>
                 )}
               />
+
+              {accountType === "company" && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="companyName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Company Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="SupportMe Inc." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="numberOfEmployees"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Employees</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="Employees"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
 
               <Button type="submit">Sign up</Button>
             </form>
