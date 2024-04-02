@@ -60,7 +60,7 @@ function Calendar({
         IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
         Dropdown: (dropdownProps) => {
-          const { currentMonth } = useNavigation();
+          const { currentMonth, goToMonth } = useNavigation();
           const { fromYear, fromMonth, fromDate, toDate, toMonth, toYear } =
             useDayPicker();
 
@@ -98,7 +98,26 @@ function Calendar({
           );
 
           return (
-            <Select>
+            <Select
+              onValueChange={(newValue: string) => {
+                console.log({ newValue });
+
+                if (dropdownProps.name === "months") {
+                  const newDate = new Date(currentMonth);
+                  console.log({ newDate });
+
+                  newDate.setMonth(parseInt(newValue));
+                  goToMonth(newDate);
+                } else if (dropdownProps.name === "years") {
+                  const newDate = new Date(currentMonth);
+                  console.log({ newDate });
+
+                  newDate.setFullYear(parseInt(newValue));
+                  goToMonth(newDate);
+                }
+              }}
+              value={dropdownProps.value?.toString()}
+            >
               <SelectTrigger>{caption}</SelectTrigger>
               <SelectContent>
                 {selectValues.map((selectValue) => (
