@@ -32,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
 import { CalendarIcon, PersonStandingIcon } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -196,7 +197,12 @@ export default function SignupPage() {
                               variant="outline"
                               className="normal-case flex justify-between pr-1"
                             >
-                              <span>Pick a date</span>
+                              {!!field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+
                               <CalendarIcon />
                             </Button>
                           </FormControl>
@@ -218,7 +224,7 @@ export default function SignupPage() {
                             // disabled={(date) => {
                             //   return date.getDay() === 0 || date.getDay() === 6;
                             // }}
-                            // captionLayout="buttons"
+                            captionLayout="dropdown-buttons"
                           />
                         </PopoverContent>
                       </Popover>
