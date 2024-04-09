@@ -9,6 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+
 import {
   Form,
   FormControl,
@@ -45,6 +47,9 @@ const formSchema = z
     accountType: z.enum(["personal", "company"]),
     companyName: z.string().optional(),
     numberOfEmployees: z.coerce.number().optional(),
+    acceptTerms: z.boolean({
+      required_error: "You must accept the terms and conditions",
+    }),
     dob: z.date().refine((date) => {
       const today = new Date();
       const eighteenYearsAgo = new Date(
@@ -275,6 +280,36 @@ export default function SignupPage() {
                     <FormControl>
                       <PasswordInput {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="acceptTerms"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex gap-2 items-center">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel>
+                        I accept the terms and the conditions
+                      </FormLabel>
+                    </div>
+                    <FormDescription>
+                      By signing up, you agree to{" "}
+                      <Link
+                        className="text-primary hover:underline"
+                        href="/terms"
+                      >
+                        terms and conditions
+                      </Link>
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
