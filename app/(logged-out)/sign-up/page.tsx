@@ -19,6 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   Popover,
   PopoverContent,
@@ -54,8 +55,25 @@ const formSchema = z
 
       return date <= eighteenYearsAgo;
     }, "You must be 18 years old"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .refine((password) => {
+        // match at least one uppercase letter, one special character.
+        const regex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])/;
+        return regex.test(password);
+      }, "Password must contain at least one uppercase letter and one special character"),
+    passwordConfirm: z.string(),
   })
   .superRefine((data, ctx) => {
+    if (data.password !== data.passwordConfirm) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["passwordConfirm"],
+        message: "Passwords do not match",
+      });
+    }
+
     if (data.accountType === "company" && !data.companyName) {
       return ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -228,6 +246,34 @@ export default function SignupPage() {
                           />
                         </PopoverContent>
                       </Popover>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <PasswordInput {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="passwordConfirm"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <PasswordInput {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
