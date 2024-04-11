@@ -15,8 +15,9 @@ import {
   UserIcon,
   UserRoundXIcon,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-
+import cm from "@/public/images/cm.jpg";
 export default function EmpoyeesStats() {
   const totalEmployees = 100;
   const employeesPresent = 80;
@@ -69,13 +70,14 @@ export default function EmpoyeesStats() {
           )}
         </CardFooter>
       </Card>
-      <Card className="border-pink-500">
+      <Card className="border-pink-500 flex flex-col ">
         <CardHeader className="pb-2">
           <CardTitle className="text-base">Employee of the month</CardTitle>
         </CardHeader>
         <CardContent className="flex justify-between items-center">
           <div className="flex gap-2 item-center">
             <Avatar>
+              <Image src={cm} alt="Employee of the month avatar" />
               <AvatarFallback>CM</AvatarFallback>
             </Avatar>
             <span className="text-2xl font-bold">Colin Murray</span>
