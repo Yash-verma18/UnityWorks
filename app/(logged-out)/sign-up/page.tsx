@@ -1,4 +1,6 @@
 "use client";
+import { signupApiCall } from "@/app/apis";
+import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -40,6 +42,7 @@ import { CalendarIcon, PersonStandingIcon } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -105,9 +108,28 @@ export default function SignupPage() {
       email: "",
     },
   });
+  const { toast } = useToast();
+  const router = useRouter();
+  const handleSubmit = async () => {
+    console.log("Signup Validation passed!");
+    const res = await signupApiCall(form.getValues());
 
-  const handleSubmit = () => {
-    console.log("Login Validation passed!");
+    if (res.status === "success") {
+      toast({
+        title: "Success",
+        description: "Signup successful",
+      });
+
+      router.push("/dashboard");
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: res.message,
+      });
+    }
+
+    form.reset();
   };
 
   const accountType = form.watch("accountType");
@@ -121,7 +143,7 @@ export default function SignupPage() {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Signup</CardTitle>
-          <CardDescription>Signup for a new SupportMe account</CardDescription>
+          <CardDescription>Signup for a new UnityWorks account</CardDescription>
         </CardHeader>
 
         <CardContent>
@@ -180,7 +202,7 @@ export default function SignupPage() {
                       <FormItem>
                         <FormLabel>Company Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="SupportMe Inc." {...field} />
+                          <Input placeholder="UnityWorks Inc." {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

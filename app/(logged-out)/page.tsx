@@ -7,7 +7,7 @@ export default function LandingPage() {
     <>
       <h1 className="flex gap-2 items-center">
         <PersonStandingIcon size={50} className="text-pink-500" />
-        SupportMe
+        UnityWorks
       </h1>
       <p>The best dashboard to manage customer support</p>
 

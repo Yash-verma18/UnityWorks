@@ -24,13 +24,18 @@ import { PersonStandingIcon } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
+import axios from "axios";
+import { loginApiCall } from "@/app/apis";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import { ToastAction } from "@/components/ui/toast";
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string(),
 });
 
 export default function LoginPage() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,8 +44,32 @@ export default function LoginPage() {
     },
   });
 
-  const handleSubmit = () => {
+  const { toast } = useToast();
+  const handleSubmit = async () => {
     console.log("Login Validation passed!");
+    const res = await loginApiCall(form.getValues());
+
+    if (res.status === "success") {
+      toast({
+        title: "Login Successful",
+        description: "You have successfully logged in",
+      });
+      router.push("/dashboard");
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: res.message.message,
+        action: (
+          <ToastAction altText="Try again" onClick={() => {}}>
+            <Link href="/sign-up">Sign up</Link>
+          </ToastAction>
+        ),
+      });
+    }
+
+    // clear the form
+    form.reset();
   };
   return (
     <>
@@ -48,7 +77,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Login</CardTitle>
-          <CardDescription>Login to your SupportMe account</CardDescription>
+          <CardDescription>Login to your UnityWorks account</CardDescription>
         </CardHeader>
 
         <CardContent>
@@ -71,7 +100,7 @@ export default function LoginPage() {
                       />
                     </FormControl>
                     <FormDescription>
-                      This is the email address you signed up to SupportMe with
+                      This is the email address you signed up to UnityWorks with
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
