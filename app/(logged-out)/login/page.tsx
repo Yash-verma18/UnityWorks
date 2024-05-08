@@ -27,8 +27,9 @@ import * as z from "zod";
 import axios from "axios";
 import { loginApiCall } from "@/app/apis";
 import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // Changed import here
 import { ToastAction } from "@/components/ui/toast";
+import { useEffect } from "react";
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string(),
@@ -36,6 +37,21 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const router = useRouter();
+
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const showToast = searchParams.get("showToast");
+    if (showToast === "true") {
+      toast({
+        title: "Access Denied",
+        description: "Log in to view dashboard",
+        variant: "destructive",
+      });
+    }
+  }, [toast]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,7 +60,6 @@ export default function LoginPage() {
     },
   });
 
-  const { toast } = useToast();
   const handleSubmit = async () => {
     console.log("Login Validation passed!");
     const res = await loginApiCall(form.getValues());

@@ -1,11 +1,14 @@
 import axios from "axios";
 
-const BACKEND_API_BASE_URL = "http://localhost:3000";
+const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
 
 export const loginApiCall = async (data) => {
   // Send a login request
   try {
-    const response = await axios.post("/api/user/login", data);
+    const response = await axios.post(
+      `${BACKEND_API_BASE_URL}/api/user/login`,
+      data
+    );
     localStorage.setItem("auth", JSON.stringify(response.data.data));
 
     return {
@@ -22,7 +25,10 @@ export const signupApiCall = async (data) => {
   // Send a signup request
 
   try {
-    const response = await axios.post("/api/user/signup", data);
+    const response = await axios.post(
+      `${BACKEND_API_BASE_URL}/api/user/signup`,
+      data
+    );
 
     localStorage.setItem("accessToken", response.data.accessToken);
     return {

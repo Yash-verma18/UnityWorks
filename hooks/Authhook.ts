@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
 const useAuth = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -11,7 +10,7 @@ const useAuth = () => {
     const auth = authString ? JSON.parse(authString) : null;
 
     if (!auth || !auth.accessToken) {
-      router.push("/login");
+      router.push("/login?showToast=true");
     } else {
       setLoading(false);
     }

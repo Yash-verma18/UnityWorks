@@ -1,3 +1,5 @@
+"use client";
+import React from "react"; // Ensure React is in scope when using JSX
 import MenuTitle from "./menu-title";
 import MenuItem from "./menu-item";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -5,6 +7,13 @@ import Link from "next/link";
 import { LightDarkToggle } from "@/components/ui/light-dark-toggle";
 
 export default function MainMenu() {
+  // Function to clear local storage and potentially redirect the user
+  const handleLogout = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault(); // Prevent the default link behavior
+    localStorage.clear(); // Clear the local storage
+    window.location.href = "/"; // Redirect to the homepage or login page
+  };
+
   return (
     <nav className="bg-muted overflow-auto p-4 flex flex-col">
       <div className="border-b dark:border-b-black border-b-zinc-300 pb-4">
@@ -23,7 +32,7 @@ export default function MainMenu() {
             YV
           </AvatarFallback>
         </Avatar>
-        <Link className="hover:underline" href="/">
+        <Link className="hover:underline" href="/" onClick={handleLogout}>
           Logout
         </Link>
         <LightDarkToggle className="ml-auto" />
