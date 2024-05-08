@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const BACKEND_API_BASE_URL =
-  process.env.BACKEND_API_BASE_URL ||
-  process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
+const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL;
+
+console.log("BACKEND_API_BASE_URL", BACKEND_API_BASE_URL);
 
 export const loginApiCall = async (data) => {
   // Send a login request
